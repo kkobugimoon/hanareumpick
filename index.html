@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf7ef">
+<meta property="og:title" content="한아름픽">
+<meta property="og:description" content="좋은 것만 골라, 한아름 드림">
+<title>한아름픽</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#faf7ef; --surface:#ffffff; --surface-2:#f4f0e4;
+  --ink:#243328; --muted:#68755f; --line:#e3ddcb;
+  --green:#1e5c46; --green-deep:#174936; --green-soft:#e9f0e8; --sage:#9db8a1;
+  --gold:#c9962e; --gold-soft:#f7edd6; --gold-deep:#a67a1f;
+  --neg:#c33; --shadow:0 2px 10px rgba(36,51,40,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+html:lang(ko){letter-spacing:.01em}
+body{
+  font-family:'Pretendard Variable',Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  background:var(--bg); color:var(--ink);
+  font-size:16px; line-height:1.6; word-break:keep-all;
+  text-rendering:optimizeLegibility; font-synthesis:none;
+  padding-bottom:40px;
+}
+main{max-width:560px;margin:0 auto;padding:0 14px}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+a{color:var(--green)}
+
+/* ---- 프로필 헤더 (브랜드 로고) ---- */
+.hd{text-align:center;padding:26px 16px 4px}
+.hd .logoimg{display:block;width:min(250px,66vw);margin:0 auto}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hd .bio{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;color:var(--green-deep);margin-top:16px}
+.hd .bio .gd{color:var(--gold-deep)}
+.hd .bio2{font-size:13.5px;color:var(--muted);margin-top:6px;letter-spacing:.06em}
+.sns{display:flex;justify-content:center;gap:9px;margin-top:14px;flex-wrap:wrap}
+.sns a{width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none}
+.rule{display:flex;align-items:center;justify-content:center;gap:8px;margin:20px 8px 0;color:var(--gold)}
+.rule::before,.rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold));opacity:.55}
+.rule::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.rule .sp{font-size:11px}
+
+/* ---- 카테고리 칩 ---- */
+.chips{display:flex;gap:8px;padding:18px 2px 4px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;min-height:42px;padding:7px 17px;font-size:14.5px;font-weight:600;transition:all .12s}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff;font-weight:800}
+.chip-sm{min-height:36px;padding:4px 13px;font-size:13.5px}
+
+/* ---- 상품 그리드 ---- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:14px 0 8px}
+@media (max-width:360px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.thumb{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(160deg,#f1ede0,#e6ecdf);overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.card .body{padding:12px 13px 14px;display:flex;flex-direction:column;flex:1}
+.badge{font-size:12px;font-weight:800;color:var(--gold-deep);letter-spacing:.02em;min-height:18px}
+.name{font-size:15.5px;font-weight:700;line-height:1.35;margin-top:3px}
+.one{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.45;flex:1}
+.priceline{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-top:9px}
+.price{font-size:17px;font-weight:800;color:var(--green-deep);font-variant-numeric:tabular-nums}
+.chn{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px;white-space:nowrap;background:var(--surface-2)}
+.go{display:flex;align-items:center;justify-content:center;width:100%;margin-top:10px;border:0;border-radius:12px;background:var(--green);color:#fff;font-size:14px;font-weight:800;min-height:44px;text-decoration:none;transition:transform .14s,background .12s}
+.go:active{transform:translateY(1px) scale(.985)}
+.go:hover{background:var(--green-deep)}
+.go.dis{opacity:.45;pointer-events:none}
+.empty{text-align:center;color:var(--muted);padding:48px 20px;font-size:15px}
+
+/* ---- 푸터 ---- */
+.foot{text-align:center;padding:28px 20px 12px;font-size:12px;color:var(--muted);line-height:1.65}
+.adminlink{display:inline-block;margin-top:14px;font-size:12px;color:var(--muted);background:none;border:0;text-decoration:underline;opacity:.7;min-height:44px}
+
+/* ---- 관리 모드 ---- */
+.abar{position:sticky;top:0;z-index:40;background:var(--green);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-radius:0 0 14px 14px}
+.abar b{font-size:15px}
+.abar button{border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:9px;min-height:38px;padding:5px 13px;font-weight:700;font-size:13.5px}
+.acard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px;box-shadow:var(--shadow)}
+.acard h3{font-size:16.5px;font-weight:800;color:var(--green-deep)}
+label{display:block;font-size:13.5px;color:var(--muted);margin:13px 0 5px;font-weight:600}
+input,select,textarea{width:100%;min-height:48px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
+textarea{min-height:76px;resize:vertical}
+input::placeholder,textarea::placeholder{color:#a8a794}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 18px;border-radius:12px;border:1px solid transparent;font-size:16px;font-weight:800;transition:transform .14s;background:transparent;color:var(--ink)}
+.btn:active{transform:translateY(1px) scale(.985)}
+.btn-gold{background:var(--green);color:#fff}
+.btn-line{border-color:var(--line)}
+.btn-block{width:100%}
+.prow{display:grid;grid-template-columns:52px 1fr auto;gap:11px;align-items:center;padding:11px;background:var(--surface-2);border:1px solid var(--line);border-radius:13px;margin-top:9px}
+.prow .pthumb{width:52px;height:52px;border-radius:10px;background:linear-gradient(160deg,#f1ede0,#e6ecdf);display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden}
+.prow .pthumb img{width:100%;height:100%;object-fit:cover}
+.prow .pn{font-size:14.5px;font-weight:700;line-height:1.3}
+.prow .pm{font-size:12px;color:var(--muted);margin-top:2px}
+.prow.hiddenp{opacity:.45}
+.pbtns{display:flex;gap:2px}
+.ib{min-width:40px;min-height:40px;border:0;background:none;font-size:15px;border-radius:8px;color:var(--muted)}
+.tgl{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:14.5px}
+.tgl input{width:22px;height:22px;min-height:0;accent-color:var(--green)}
+.filebtn{margin-top:8px;font-size:13.5px;color:var(--muted)}
+#toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--green);color:#fff;padding:12px 20px;border-radius:12px;font-size:15px;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s;z-index:80;box-shadow:0 6px 18px rgba(23,73,54,.35);white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#toast.on{opacity:1}
+#pinGate{position:fixed;inset:0;background:rgba(36,51,40,.5);z-index:70;display:none;align-items:center;justify-content:center;padding:24px}
+#pinGate.on{display:flex}
+#pinGate .box{width:100%;max-width:330px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 12px 30px rgba(36,51,40,.25)}
+.hiddenv{display:none!important}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<main>
+  <!-- ===== 공개 화면 ===== -->
+  <section id="pub">
+    <div class="hd">
+      <img class="logoimg" src="https://qtxxhvpjuxjgahpfqokf.supabase.co/storage/v1/object/public/hanareum/products/1783328283386_y8ozyt.png" alt="한아름픽 — HANAREUM PICK 로고">
+      <h1 id="pTitle" class="visually-hidden">한아름픽</h1>
+      <div class="bio" id="pBio">좋은 것만 골라, <span class="gd">한아름 드림</span></div>
+      <div class="bio2" id="pBio2">건강한 일상을 위한 따뜻한 선택</div>
+      <div class="sns" id="pSns"></div>
+      <div class="rule"><span class="sp">✦</span></div>
+    </div>
+    <div class="chips" id="catChips"></div>
+    <div class="grid" id="prodGrid"></div>
+    <div class="foot" id="pFoot"></div>
+    <div style="text-align:center"><button class="adminlink" onclick="enterAdmin()">관리</button></div>
+  </section>
+
+  <!-- ===== 관리 모드 ===== -->
+  <section id="adm" class="hiddenv">
+    <div class="abar"><b>🌿 한아름픽 관리 모드</b><button onclick="exitAdmin()">미리보기 ↗</button></div>
+
+    <div class="acard">
+      <h3 id="formTitle">상품 추가</h3>
+      <label for="fName">상품명 *</label>
+      <input id="fName" placeholder="예: 듀얼플랜 다이어트 유산균">
+      <label for="fOne">한 줄 소개</label>
+      <input id="fOne" placeholder="예: 식전 1알, 직접 먹어보고 올리는 제품">
+      <div class="row2">
+        <div><label for="fPrice">가격 (원)</label><input type="number" id="fPrice" inputmode="numeric" min="0" placeholder="36900"></div>
+        <div><label for="fChannel">채널</label>
+          <select id="fChannel"><option>쿠팡</option><option>네이버</option><option>토스쇼핑</option><option>기타</option></select>
+        </div>
+      </div>
+      <label for="fUrl">상품 링크 (URL) *</label>
+      <input id="fUrl" inputmode="url" placeholder="https://...">
+      <div class="row2">
+        <div><label for="fBadge">뱃지 (선택)</label><input id="fBadge" placeholder="🔥 한아름 강추"></div>
+        <div><label for="fCat">카테고리 (선택)</label><input id="fCat" placeholder="다이어트"></div>
+      </div>
+      <label for="fImg">사진 URL (선택)</label>
+      <input id="fImg" inputmode="url" placeholder="https://... (아래 버튼으로 직접 업로드 가능)">
+      <div class="filebtn">📷 <label for="fFile" style="display:inline;margin:0;text-decoration:underline;cursor:pointer">폰에서 사진 올리기</label>
+        <input type="file" id="fFile" accept="image/*" style="display:none" onchange="uploadImage(this)">
+        <span id="upStat"></span>
+      </div>
+      <label for="fEmoji">이모지 (사진 없을 때 표시)</label>
+      <input id="fEmoji" maxlength="4" placeholder="🌱">
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-line" id="btnCancel" style="display:none" onclick="resetForm()">취소</button>
+        <button class="btn btn-gold btn-block" id="btnSave" onclick="saveProduct()">상품 저장</button>
+      </div>
+    </div>
+
+    <div class="acard">
+      <h3>상품 목록 <span id="prodCnt" style="font-size:13px;color:var(--muted);font-weight:600"></span></h3>
+      <div id="admList"></div>
+    </div>
+
+    <div class="acard">
+      <h3>페이지 설정</h3>
+      <label for="sTitle">상점 이름</label>
+      <input id="sTitle">
+      <label for="sBio">대표 문구 ("한아름"은 자동으로 금색 강조)</label>
+      <input id="sBio">
+      <label for="sBio2">보조 문구</label>
+      <input id="sBio2">
+      <label for="sSns">SNS 링크 — 한 줄에 하나, "이모지 주소" 형식</label>
+      <textarea id="sSns" placeholder="📷 https://instagram.com/...
+🧵 https://threads.net/..."></textarea>
+      <div class="tgl"><span>쿠팡 파트너스 고지 문구</span><input type="checkbox" id="sN1"></div>
+      <div class="tgl"><span>일반 수수료 고지 문구</span><input type="checkbox" id="sN2"></div>
+      <button class="btn btn-gold btn-block" style="margin-top:16px" onclick="saveSettings()">설정 저장</button>
+    </div>
+  </section>
+</main>
+
+<div id="pinGate" role="dialog" aria-modal="true" aria-label="관리자 PIN">
+  <div class="box">
+    <div style="font-size:17px;font-weight:800;color:var(--green-deep)">관리자 확인</div>
+    <label for="pinInput">PIN</label>
+    <input id="pinInput" inputmode="numeric" maxlength="6" autocomplete="off" style="text-align:center;font-size:22px;letter-spacing:8px">
+    <div id="pinErr" style="color:var(--neg);font-size:13.5px;display:none;margin-top:8px">PIN이 올바르지 않습니다.</div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-line" onclick="closePin()">닫기</button>
+      <button class="btn btn-gold btn-block" onclick="submitPin()">확인</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+'use strict';
+var PRODUCTS = [], APRODUCTS = [], SET = null, CAT = '전체', EDIT_ID = null, ADMIN = false;
+
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function won(n){ return Number(n).toLocaleString('ko-KR') + '원'; }
+function toast(m){ var t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove('on'); }, 2400); }
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+var API_URL = 'https://qtxxhvpjuxjgahpfqokf.supabase.co/functions/v1/hanareum/api';
+function getPin(){ return localStorage.getItem('hp_pin') || ''; }
+function api(action, payload, needPin, tryNo){
+  tryNo = tryNo || 0;
+  var headers = { 'content-type': 'application/json' };
+  if (needPin) headers['x-pin'] = getPin();
+  return fetch(API_URL, {
+    method: 'POST', headers: headers,
+    body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+  }).then(function(r){
+    if (r.status === 401){ localStorage.removeItem('hp_pin'); openPin(true); throw new Error('unauthorized'); }
+    if (r.status >= 500 && tryNo < 2){ return wait(700 * (tryNo + 1)).then(function(){ return api(action, payload, needPin, tryNo + 1); }); }
+    if (!r.ok) return r.json().then(function(j){ throw new Error(j.error || ('HTTP ' + r.status)); });
+    return r.json();
+  }).catch(function(e){
+    if (e.message !== 'unauthorized' && e instanceof TypeError && tryNo < 2){
+      return wait(700 * (tryNo + 1)).then(function(){ return api(action, payload, needPin, tryNo + 1); });
+    }
+    throw e;
+  });
+}
+
+var BOOT_RETRY = null;
+function boot(){
+  clearTimeout(BOOT_RETRY);
+  api('public').then(function(d){
+    PRODUCTS = d.products || [];
+    SET = d.settings || {};
+    renderPublic();
+    if (ADMIN) refreshAdmin();
+  }).catch(function(e){
+    if (e.message === 'unauthorized') return;
+    $('#prodGrid').innerHTML = '<div class="empty">불러오지 못했어요. 잠시 후 자동으로 다시 시도합니다…</div>';
+    BOOT_RETRY = setTimeout(boot, 5000);
+  });
+}
+window.addEventListener('online', boot);
+
+/* ---------- 공개 렌더 ---------- */
+function bioHtml(s){
+  // "한아름"이 들어간 구절을 금색으로 강조
+  return esc(s).replace(/(한아름[^\s,]*(?:\s*드림|\s*드립니다)?)/g, '<span class="gd">$1</span>');
+}
+function renderPublic(){
+  document.title = SET.title || '한아름픽';
+  $('#pTitle').textContent = SET.title || '한아름픽';
+  $('#pBio').innerHTML = bioHtml(SET.bio || '');
+  $('#pBio2').textContent = SET.bio2 || '';
+  $('#pBio2').style.display = SET.bio2 ? 'block' : 'none';
+  var sns = Array.isArray(SET.sns) ? SET.sns : [];
+  $('#pSns').innerHTML = sns.map(function(s){
+    return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener" aria-label="SNS 링크">' + esc(s.label || '🔗') + '</a>';
+  }).join('');
+  $('#pSns').style.display = sns.length ? 'flex' : 'none';
+
+  var cats = ['전체'];
+  PRODUCTS.forEach(function(p){ if (p.category && cats.indexOf(p.category) < 0) cats.push(p.category); });
+  if (CAT !== '전체' && cats.indexOf(CAT) < 0) CAT = '전체';
+  $('#catChips').innerHTML = cats.map(function(c){
+    return '<button class="chip" aria-pressed="' + String(c === CAT) + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
+  }).join('');
+  $('#catChips').style.display = cats.length > 1 ? 'flex' : 'none';
+
+  var list = PRODUCTS.filter(function(p){ return CAT === '전체' || p.category === CAT; });
+  $('#prodGrid').innerHTML = list.length ? list.map(cardHtml).join('')
+    : '<div class="empty" style="grid-column:1/-1">아직 등록된 상품이 없어요.<br>곧 좋은 것들로 채워질 예정입니다 🌿</div>';
+
+  var notices = [];
+  if (SET.notice_partners) notices.push('이 페이지는 쿠팡 파트너스 활동의 일환으로, 구매 시 일정액의 수수료를 제공받을 수 있습니다.');
+  if (SET.notice_generic) notices.push('일부 상품은 ' + esc(SET.title || '한아름픽') + '이 직접 판매하거나 판매 수수료를 받는 상품입니다.');
+  $('#pFoot').innerHTML = notices.join('<br>') + (notices.length ? '<br>' : '') + 'ⓒ ' + esc(SET.title || '한아름픽');
+}
+function cardHtml(p){
+  var img = p.image_url
+    ? '<img src="' + esc(p.image_url) + '" alt="' + esc(p.name) + '" loading="lazy" onerror="this.remove()">'
+    : esc(p.emoji || '🌿');
+  var goAttr = p.url ? 'href="' + esc(p.url) + '" target="_blank" rel="noopener"' : '';
+  var goCls = p.url ? 'go' : 'go dis';
+  var goTxt = p.url ? esc(p.channel || '쿠팡') + '에서 보기 →' : '링크 준비중';
+  return '<div class="card">'
+    + '<div class="thumb">' + img + '</div>'
+    + '<div class="body">'
+    + '<div class="badge">' + esc(p.badge || '') + '</div>'
+    + '<div class="name">' + esc(p.name) + '</div>'
+    + '<div class="one">' + esc(p.one_liner || '') + '</div>'
+    + '<div class="priceline">' + (p.price ? '<span class="price">' + won(p.price) + '</span>' : '<span></span>')
+    + '<span class="chn">' + esc(p.channel || '') + '</span></div>'
+    + '<a class="' + goCls + '" ' + goAttr + '>' + goTxt + '</a>'
+    + '</div></div>';
+}
+$('#catChips').addEventListener('click', function(e){
+  var b = e.target.closest('[data-cat]');
+  if (b){ CAT = b.getAttribute('data-cat'); renderPublic(); }
+});
+
+/* ---------- PIN ---------- */
+function openPin(bad){
+  $('#pinGate').classList.add('on');
+  $('#pinErr').style.display = bad ? 'block' : 'none';
+  setTimeout(function(){ $('#pinInput').focus(); }, 50);
+}
+function closePin(){ $('#pinGate').classList.remove('on'); }
+function submitPin(){
+  var v = $('#pinInput').value.trim();
+  if (v.length < 4) return;
+  localStorage.setItem('hp_pin', v);
+  $('#pinInput').value = '';
+  closePin();
+  enterAdmin();
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && document.activeElement === $('#pinInput')) submitPin();
+  if (e.key === 'Escape' && $('#pinGate').classList.contains('on')) closePin();
+});
+
+/* ---------- 관리 모드 ---------- */
+function enterAdmin(){
+  if (!getPin()){ openPin(false); return; }
+  api('admin_boot', {}, true).then(function(d){
+    APRODUCTS = d.products || [];
+    SET = d.settings || SET;
+    ADMIN = true;
+    $('#pub').classList.add('hiddenv');
+    $('#adm').classList.remove('hiddenv');
+    renderAdmin();
+    window.scrollTo(0, 0);
+  }).catch(function(e){ if (e.message !== 'unauthorized') toast('진입 실패: ' + e.message); });
+}
+function exitAdmin(){
+  ADMIN = false;
+  $('#adm').classList.add('hiddenv');
+  $('#pub').classList.remove('hiddenv');
+  boot();
+  window.scrollTo(0, 0);
+}
+function refreshAdmin(){
+  return api('admin_boot', {}, true).then(function(d){
+    APRODUCTS = d.products; SET = d.settings; renderAdmin();
+  });
+}
+function renderAdmin(){
+  $('#prodCnt').textContent = '(' + APRODUCTS.length + '개)';
+  $('#admList').innerHTML = APRODUCTS.length ? APRODUCTS.map(function(p, i){
+    var img = p.image_url ? '<img src="' + esc(p.image_url) + '" alt="">' : esc(p.emoji || '🌿');
+    return '<div class="prow' + (p.hidden ? ' hiddenp' : '') + '">'
+      + '<div class="pthumb">' + img + '</div>'
+      + '<div><div class="pn">' + esc(p.name) + '</div>'
+      + '<div class="pm">' + (p.price ? won(p.price) + ' · ' : '') + esc(p.channel || '') + (p.category ? ' · ' + esc(p.category) : '') + (p.hidden ? ' · 숨김' : '') + '</div></div>'
+      + '<div class="pbtns">'
+      + '<button class="ib" aria-label="위로" data-up="' + i + '">▲</button>'
+      + '<button class="ib" aria-label="아래로" data-down="' + i + '">▼</button>'
+      + '<button class="ib" aria-label="숨김 전환" data-hide="' + p.id + '">' + (p.hidden ? '👁' : '🙈') + '</button>'
+      + '<button class="ib" aria-label="수정" data-edit="' + p.id + '">✏️</button>'
+      + '<button class="ib" aria-label="삭제" data-del="' + p.id + '">🗑️</button>'
+      + '</div></div>';
+  }).join('') : '<div class="pm" style="margin-top:10px;color:var(--muted)">상품이 없습니다. 위에서 추가하세요.</div>';
+
+  $('#sTitle').value = SET.title || '';
+  $('#sBio').value = SET.bio || '';
+  $('#sBio2').value = SET.bio2 || '';
+  var sns = Array.isArray(SET.sns) ? SET.sns : [];
+  $('#sSns').value = sns.map(function(s){ return (s.label || '🔗') + ' ' + s.url; }).join('\n');
+  $('#sN1').checked = !!SET.notice_partners;
+  $('#sN2').checked = !!SET.notice_generic;
+}
+$('#admList').addEventListener('click', function(e){
+  var b;
+  b = e.target.closest('[data-edit]'); if (b) return editProduct(Number(b.getAttribute('data-edit')));
+  b = e.target.closest('[data-del]'); if (b) return delProduct(Number(b.getAttribute('data-del')));
+  b = e.target.closest('[data-hide]'); if (b) return toggleHide(Number(b.getAttribute('data-hide')));
+  b = e.target.closest('[data-up]'); if (b) return moveProduct(Number(b.getAttribute('data-up')), -1);
+  b = e.target.closest('[data-down]'); if (b) return moveProduct(Number(b.getAttribute('data-down')), 1);
+});
+
+function readForm(){
+  return {
+    name: $('#fName').value.trim(),
+    one_liner: $('#fOne').value.trim() || null,
+    price: Number($('#fPrice').value) || null,
+    channel: $('#fChannel').value,
+    url: $('#fUrl').value.trim(),
+    badge: $('#fBadge').value.trim() || null,
+    category: $('#fCat').value.trim() || null,
+    image_url: $('#fImg').value.trim() || null,
+    emoji: $('#fEmoji').value.trim() || null
+  };
+}
+function resetForm(){
+  EDIT_ID = null;
+  ['fName','fOne','fPrice','fUrl','fBadge','fCat','fImg','fEmoji'].forEach(function(id){ $('#' + id).value = ''; });
+  $('#upStat').textContent = '';
+  $('#formTitle').textContent = '상품 추가';
+  $('#btnSave').textContent = '상품 저장';
+  $('#btnCancel').style.display = 'none';
+}
+function saveProduct(){
+  var p = readForm();
+  if (!p.name){ toast('상품명을 입력하세요'); return; }
+  if (!p.url){ toast('상품 링크(URL)를 입력하세요'); return; }
+  if (!/^https?:\/\//.test(p.url)){ toast('링크는 https:// 로 시작해야 합니다'); return; }
+  var btn = $('#btnSave'); btn.disabled = true;
+  var call = EDIT_ID ? api('update', { id: EDIT_ID, p: p }, true) : api('add', { p: p }, true);
+  call.then(function(){
+    toast(EDIT_ID ? '수정했습니다' : '상품을 올렸습니다');
+    resetForm();
+    return refreshAdmin();
+  }).catch(function(e){ if (e.message !== 'unauthorized') toast('저장 실패: ' + e.message); })
+    .finally(function(){ btn.disabled = false; });
+}
+function editProduct(id){
+  var p = APRODUCTS.find(function(x){ return x.id === id; });
+  if (!p) return;
+  EDIT_ID = id;
+  $('#fName').value = p.name; $('#fOne').value = p.one_liner || '';
+  $('#fPrice').value = p.price || ''; $('#fChannel').value = p.channel || '쿠팡';
+  $('#fUrl').value = p.url || ''; $('#fBadge').value = p.badge || '';
+  $('#fCat').value = p.category || ''; $('#fImg').value = p.image_url || '';
+  $('#fEmoji').value = p.emoji || '';
+  $('#formTitle').textContent = '상품 수정: ' + p.name;
+  $('#btnSave').textContent = '수정 저장';
+  $('#btnCancel').style.display = 'inline-flex';
+  window.scrollTo(0, 0);
+}
+function delProduct(id){
+  if (!confirm('이 상품을 삭제할까요?')) return;
+  api('del', { id: id }, true).then(function(){ toast('삭제했습니다'); return refreshAdmin(); })
+    .catch(function(e){ if (e.message !== 'unauthorized') toast('삭제 실패: ' + e.message); });
+}
+function toggleHide(id){
+  var p = APRODUCTS.find(function(x){ return x.id === id; });
+  if (!p) return;
+  api('update', { id: id, p: { hidden: !p.hidden } }, true)
+    .then(function(){ return refreshAdmin(); })
+    .catch(function(e){ if (e.message !== 'unauthorized') toast('실패: ' + e.message); });
+}
+function moveProduct(idx, dir){
+  var j = idx + dir;
+  if (j < 0 || j >= APRODUCTS.length) return;
+  var ids = APRODUCTS.map(function(p){ return p.id; });
+  var tmp = ids[idx]; ids[idx] = ids[j]; ids[j] = tmp;
+  api('reorder', { ids: ids }, true).then(function(){ return refreshAdmin(); })
+    .catch(function(e){ if (e.message !== 'unauthorized') toast('순서 변경 실패: ' + e.message); });
+}
+function uploadImage(input){
+  var f = input.files && input.files[0];
+  if (!f) return;
+  if (f.size > 4 * 1024 * 1024){ toast('사진이 너무 큽니다 (4MB 이하)'); input.value = ''; return; }
+  $('#upStat').textContent = ' 올리는 중…';
+  var rd = new FileReader();
+  rd.onload = function(){
+    var b64 = String(rd.result).split(',')[1];
+    api('upload_image', { filename: f.name, b64: b64, mime: f.type }, true).then(function(d){
+      $('#fImg').value = d.url;
+      $('#upStat').textContent = ' ✓ 업로드 완료';
+      toast('사진 업로드 완료');
+    }).catch(function(e){
+      $('#upStat').textContent = '';
+      if (e.message !== 'unauthorized') toast('업로드 실패: ' + e.message);
+    }).finally(function(){ input.value = ''; });
+  };
+  rd.readAsDataURL(f);
+}
+function saveSettings(){
+  var sns = $('#sSns').value.split('\n').map(function(l){
+    l = l.trim();
+    if (!l) return null;
+    var sp = l.indexOf(' ');
+    if (sp < 0) return { label: '🔗', url: l };
+    return { label: l.slice(0, sp).trim(), url: l.slice(sp + 1).trim() };
+  }).filter(function(s){ return s && /^https?:\/\//.test(s.url); });
+  var s = {
+    title: $('#sTitle').value.trim() || '한아름픽',
+    bio: $('#sBio').value.trim(),
+    bio2: $('#sBio2').value.trim(),
+    sns: sns,
+    notice_partners: $('#sN1').checked,
+    notice_generic: $('#sN2').checked
+  };
+  api('set_settings', { settings: s }, true).then(function(d){
+    SET = d.settings; toast('설정 저장됨'); renderAdmin();
+  }).catch(function(e){ if (e.message !== 'unauthorized') toast('저장 실패: ' + e.message); });
+}
+
+/* ---------- 시작 ---------- */
+boot();
+</script>
+</body>
+</html>
