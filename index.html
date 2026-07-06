@@ -246,6 +246,9 @@ function boot(){
     SET = d.settings || {};
     renderPublic();
     if (ADMIN) refreshAdmin();
+    // 모바일에서 사진 선택 중 브라우저가 페이지를 새로고침한 경우 →
+    // 임시저장된 작성 내용이 있으면 관리 모드로 자동 복귀해 복원
+    else if (getPin() && localStorage.getItem(DRAFT_KEY)) enterAdmin();
   }).catch(function(e){
     if (e.message === 'unauthorized') return;
     $('#prodGrid').innerHTML = '<div class="empty">불러오지 못했어요. 잠시 후 자동으로 다시 시도합니다…</div>';
@@ -331,6 +334,40 @@ document.addEventListener('keydown', function(e){
   if (e.key === 'Escape' && $('#pinGate').classList.contains('on')) closePin();
 });
 
+/* ---------- 작성 내용 임시저장 (모바일 사진선택 새로고침 대비) ---------- */
+var DRAFT_KEY = 'hp_draft';
+var DRAFT_FIELDS = ['fName','fOne','fPrice','fChannel','fUrl','fBadge','fCat','fImg','fEmoji'];
+function saveDraft(){
+  if (!ADMIN) return;
+  var d = { editId: EDIT_ID, f: {} };
+  DRAFT_FIELDS.forEach(function(id){ d.f[id] = $('#' + id).value; });
+  var has = d.editId || d.f.fName || d.f.fUrl || d.f.fImg || d.f.fOne;
+  if (has) localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  else localStorage.removeItem(DRAFT_KEY);
+}
+function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
+function restoreDraft(){
+  var raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) return;
+  var d;
+  try { d = JSON.parse(raw); } catch (e) { clearDraft(); return; }
+  DRAFT_FIELDS.forEach(function(id){ var el = $('#' + id); if (el && d.f && d.f[id] != null) el.value = d.f[id]; });
+  if (d.editId){
+    EDIT_ID = d.editId;
+    var p = APRODUCTS.find(function(x){ return x.id === d.editId; });
+    $('#formTitle').textContent = '상품 수정' + (p ? ': ' + p.name : '');
+    $('#btnSave').textContent = '수정 저장';
+    $('#btnCancel').style.display = 'inline-flex';
+  }
+  toast('작성 중이던 내용을 복원했어요');
+}
+document.addEventListener('input', function(e){
+  if (ADMIN && e.target && e.target.id !== 'fFile' && DRAFT_FIELDS.indexOf(e.target.id) >= 0) saveDraft();
+});
+document.addEventListener('change', function(e){
+  if (ADMIN && e.target && e.target.id !== 'fFile' && DRAFT_FIELDS.indexOf(e.target.id) >= 0) saveDraft();
+});
+
 /* ---------- 관리 모드 ---------- */
 function enterAdmin(){
   if (!getPin()){ openPin(false); return; }
@@ -341,6 +378,7 @@ function enterAdmin(){
     $('#pub').classList.add('hiddenv');
     $('#adm').classList.remove('hiddenv');
     renderAdmin();
+    restoreDraft();
     window.scrollTo(0, 0);
   }).catch(function(e){ if (e.message !== 'unauthorized') toast('진입 실패: ' + e.message); });
 }
@@ -405,6 +443,7 @@ function readForm(){
 }
 function resetForm(){
   EDIT_ID = null;
+  clearDraft();
   ['fName','fOne','fPrice','fUrl','fBadge','fCat','fImg','fEmoji'].forEach(function(id){ $('#' + id).value = ''; });
   $('#upStat').textContent = '';
   $('#formTitle').textContent = '상품 추가';
@@ -437,6 +476,7 @@ function editProduct(id){
   $('#formTitle').textContent = '상품 수정: ' + p.name;
   $('#btnSave').textContent = '수정 저장';
   $('#btnCancel').style.display = 'inline-flex';
+  saveDraft();
   window.scrollTo(0, 0);
 }
 function delProduct(id){
@@ -469,6 +509,7 @@ function uploadImage(input){
     var b64 = String(rd.result).split(',')[1];
     api('upload_image', { filename: f.name, b64: b64, mime: f.type }, true).then(function(d){
       $('#fImg').value = d.url;
+      saveDraft();
       $('#upStat').textContent = ' ✓ 업로드 완료';
       toast('사진 업로드 완료');
     }).catch(function(e){
